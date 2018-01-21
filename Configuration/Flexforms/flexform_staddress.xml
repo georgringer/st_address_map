@@ -1,0 +1,100 @@
+<T3DataStructure>
+    <sheets>
+        <!--
+            ################################
+              SHEET General Settings
+            ################################
+        -->
+        <sDEF>
+            <ROOT>
+                <TCEforms>
+                    <sheetTitle>LLL:EXT:news/Resources/Private/Language/locallang_be.xlf:flexforms_tab.settings
+                    </sheetTitle>
+                </TCEforms>
+                <type>array</type>
+                <el>
+                    <mapwidth>
+                        <TCEforms>
+                            <exclude>1</exclude>
+                            <label>LLL:EXT:st_address_map/Resources/Private/Language/locallang_db.xml:mapwidth</label>
+                            <config>
+                                <type>input</type>
+                                <size>4</size>
+                                <max>100</max>
+                                <eval>trim</eval>
+                            </config>
+                        </TCEforms>
+                    </mapwidth>
+
+                    <mapheight>
+                        <TCEforms>
+                            <exclude>1</exclude>
+                            <label>LLL:EXT:st_address_map/Resources/Private/Language/locallang_db.xml:mapheight</label>
+                            <config>
+                                <type>input</type>
+                                <size>4</size>
+                                <max>100</max>
+                                <eval>trim</eval>
+                            </config>
+                        </TCEforms>
+                    </mapheight>
+
+                    <addresslist>
+                        <TCEforms>
+                            <exclude>1</exclude>
+                            <label>LLL:EXT:st_address_map/Resources/Private/Language/locallang_db.xml:addresslist</label>
+                            <config>
+                                <type>group</type>
+                                <internal_type>db</internal_type>
+                                <allowed>pages</allowed>
+                                <size>3</size>
+                                <minitems>1</minitems>
+                                <maxitems>10</maxitems>
+                            </config>
+                        </TCEforms>
+                    </addresslist>
+
+                    <start_zoom>
+                        <TCEforms>
+                            <exclude>1</exclude>
+                            <label>LLL:EXT:st_address_map/Resources/Private/Language/locallang_db.xml:start_zoom</label>
+                            <config>
+                                <type>input</type>
+                                <size>2</size>
+                                <max>100</max>
+                                <eval>trim</eval>
+                            </config>
+                        </TCEforms>
+                    </start_zoom>
+
+                    <detail_zoom>
+                        <TCEforms>
+                            <exclude>1</exclude>
+                            <label>LLL:EXT:st_address_map/Resources/Private/Language/locallang_db.xml:detail_zoom</label>
+                            <config>
+                                <type>input</type>
+                                <size>2</size>
+                                <max>100</max>
+                                <eval>trim</eval>
+                            </config>
+                        </TCEforms>
+                    </detail_zoom>
+
+                    <center_coordinates>
+                        <TCEforms>
+                            <exclude>1</exclude>
+                            <label>LLL:EXT:st_address_map/Resources/Private/Language/locallang_db.xml:center_coordinates</label>
+                            <config>
+                                <type>input</type>
+                                <size>30</size>
+                                <max>100</max>
+                                <eval>trim</eval>
+                            </config>
+                        </TCEforms>
+                    </center_coordinates>
+                </el>
+            </ROOT>
+
+        </sDEF>
+    </sheets>
+</T3DataStructure>

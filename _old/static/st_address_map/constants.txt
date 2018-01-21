@@ -1,0 +1,95 @@
+plugin.tx_staddressmap_pi1 {
+	bubblelayout {
+		# cat=Addressmap - Bubblelayout//0010; type=wrap; label= allWrap
+		wrap = <table class="bubble">|</table>
+		# cat=Addressmap - Bubblelayout//0020; type=wrap; label= nameWrap
+		name = <tr><th>|
+		# cat=Addressmap - Bubblelayout//0030; type=wrap; label= lastnameWrap
+		last_name = |</th></tr>
+		# cat=Addressmap - Bubblelayout//0040; type=wrap; label= addressWrap
+		address = <tr><td>|</td></tr>
+		# cat=Addressmap - Bubblelayout//0050; type=wrap; label= zipWrap
+		zip = <tr><td>|
+		# cat=Addressmap - Bubblelayout//0060; type=wrap; label= cityWrap
+		city = &nbsp;|</td></tr>
+		# cat=Addressmap - Bubblelayout//0070; type=wrap; label= regionWrap
+		region = <tr><td>|</td></tr>
+		# cat=Addressmap - Bubblelayout//0080; type=wrap; label= countryWrap
+		country = <tr><td>|</td></tr>
+		# cat=Addressmap - Bubblelayout//0090; type=wrap; label= phoneWrap
+		phone = <tr><td>|</td></tr>
+		# cat=Addressmap - Bubblelayout//0100; type=wrap; label= emailWrap
+		email = <tr><td>|</td></tr>
+		# cat=Addressmap - Bubblelayout//0110; type=wrap; label= descriptionWrap
+		description = <tr><td>|</td></tr>
+	}
+
+	listlayout {
+		# cat=Addressmap - Listlayout//0010; type=wrap; label= nameWrap
+		name = |
+		# cat=Addressmap - Listlayout//0020; type=wrap; label= lastnameWrap
+		last_name = |
+		# cat=Addressmap - Listlayout//0030; type=wrap; label= addressWrap
+		address = |<br />
+		# cat=Addressmap - Listlayout//0040; type=wrap; label= zipWrap
+		zip = |
+		# cat=Addressmap - Listlayout//0050; type=wrap; label= cityWrap
+		city = &nbsp;|<br />
+		# cat=Addressmap - Listlayout//0060; type=wrap; label= regionWrap
+		region = |<br />
+		# cat=Addressmap - Listlayout//0070; type=wrap; label= countryWrap
+		country = |
+		# cat=Addressmap - Listlayout//0080; type=wrap; label= phoneWrap
+		phone = Phone: |<br />
+		# cat=Addressmap - Listlayout//0090; type=wrap; label= emailWrap
+		email = |
+		# cat=Addressmap - Listlayout//0100; type=wrap; label= descriptionWrap
+		description = Description:<br />|<br />
+		# cat=Addressmap - Listlayout//0110; type=wrap; label= distanceWrap
+		distance = Distance:&nbsp;|
+	}
+
+	# cat=Addressmap - Settings//0005; type=boolean; label= including own jQuery
+	ownJquery = 0
+	# cat=Addressmap - Settings//0010; type=string; label= templateFile
+	templateFile = EXT:st_address_map/static/template.html
+	# cat=Addressmap - Settings//0020; type=string; label= tablefields: You can add various other tt_address table fields to use them as markers in the templateFile (###YOURFIELD###).
+	tablefields =  first_name, last_name, phone, address, zip, city, region, country, description
+	# cat=Addressmap - Settings//0030; type=string; label= bubblefields: Add the tt_address table fields, which shall be shown in the bubble.
+	bubblefields =  name, address, zip, city, phone
+	# cat=Addressmap - Settings//0040; type=string; label= dropdownfields
+	dropdownfields = city, region
+	# cat=Addressmap - Settings//0050; type=string; label= inputfields
+	inputfields = zip
+	# cat=Addressmap - Settings//0060; type=string; label= radiusfields: The field in which you want to search for.
+	radiusfields = zip
+	# cat=Addressmap - Settings//0070; type=int+; label= searchradius: Distance in kilometers
+	searchradius = 10
+	# cat=Addressmap - Settings//0080; type=string; label= radiuscountry
+	radiuscountry = Deutschland
+	# cat=Addressmap - Settings//0090; type=boolean; label= circle
+	circle = 1
+	# cat=Addressmap - Settings//0100; type=color; label= circle Stroke Color
+	circleStrokeColor = #FF0000
+	# cat=Addressmap - Settings//0110; type=string; label= circle Stroke Opacity
+	circleStrokeOpacity = 0.8
+	# cat=Addressmap - Settings//0120; type=int+; label= circle Stroke Weight
+	circleStrokeWeight = 2
+	# cat=Addressmap - Settings//0130; type=color; label= circle fillColor
+	circlefillColor = #FF0000
+	# cat=Addressmap - Settings//0140; type=string; label= circle fillOpacity
+	circlefillOpacity = 0.35
+	# cat=Addressmap - Settings//0150; type=boolean; label= see at start
+	seeatstart = 1
+	# cat=Addressmap - Settings//0160; type=string; label= order all
+	orderall = city
+	# cat=Addressmap - Settings//0170; type=boolean; label= fancyselect
+	fancyselect = 0
+	# cat=Addressmap - Settings//0180; type=boolean; label= searchbutton
+	searchbutton = 1
+	# cat=Addressmap - Settings//0190; type=file[png,jpg,gif]; label= bubblemarker: You can add your own marker image.
+	bubblemarker =
+
+	ajaxtypenum = 21580145
+
+}

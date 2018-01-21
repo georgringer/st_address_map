@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<type>module</type>
+		<description>Language labels for plugin &quot;tx_staddressmap_pi1&quot;</description>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="error_empty_mapheight">Please fill in the field "Map Height"</label>
+			<label index="error_empty_start_zoom">Please fill in the field "Start Zoom"</label>
+			<label index="error_empty_detail_zoom">Please fill in the field "Detail Zoom"</label>
+			<label index="error_empty_center_coordinates">Please fill in the field "Start Coordinates"</label>
+			<label index="error_empty_mapwidth">Please fill in the field "Map Width"</label>
+			<label index="nodata">No Data</label>
+			<label index="error_spam">Google Spam is enabled</label>
+			<label index="error_google">Error - page view of Google-Maps isn't possible. Please activate Curl in the install-tool.</label>
+			<label index="error_place"> is not found</label>
+			<label index="nodata">No data</label>
+			<label index="please_select">Please select</label>
+			<label index="search">search</label>
+		</languageKey>
+		
+		<languageKey index="de" type="array">
+			<label index="error_empty_mapheight">Bitte das Feld "Maphöhe" ausfüllen</label>
+			<label index="error_empty_start_zoom">Bitte das Feld "Startzoom" ausfüllen!</label>
+			<label index="error_empty_detail_zoom">Bitte das Feld "Detailzoom" ausfüllen!</label>
+			<label index="error_empty_center_coordinates">Bitte das Feld "Startkoordinaten" ausfüllen!</label>
+			<label index="error_empty_mapwidth">Bitte das Feld "Mapbreite" ausfüllen!</label>
+			<label index="nodata">Keine Einträge vorhanden</label>
+			<label index="error_spam">Google Spam ist aktiv</label>
+			<label index="error_google">Fehler beim Aufruf von Google-Maps. Bitte Curl im Install-Tool aktivieren.</label>
+			<label index="error_place"> wurde nicht gefunden</label>
+			<label index="nodata">Keine Daten vorhanden</label>
+			<label index="please_select">Bitte wählen</label>
+			<label index="search">Suchen</label>
+		</languageKey>
+	</data>
+</T3locallang>
