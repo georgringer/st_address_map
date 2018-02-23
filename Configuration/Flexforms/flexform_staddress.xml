@@ -13,7 +13,7 @@
                 </TCEforms>
                 <type>array</type>
                 <el>
-                    <mapwidth>
+                    <settings.mapwidth>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:st_address_map/Resources/Private/Language/locallang_db.xml:mapwidth</label>
@@ -24,9 +24,9 @@
                                 <eval>trim</eval>
                             </config>
                         </TCEforms>
-                    </mapwidth>
+                    </settings.mapwidth>
 
-                    <mapheight>
+                    <settings.mapheight>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:st_address_map/Resources/Private/Language/locallang_db.xml:mapheight</label>
@@ -37,9 +37,9 @@
                                 <eval>trim</eval>
                             </config>
                         </TCEforms>
-                    </mapheight>
+                    </settings.mapheight>
 
-                    <addresslist>
+                    <settings.addresslist>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:st_address_map/Resources/Private/Language/locallang_db.xml:addresslist</label>
@@ -52,9 +52,9 @@
                                 <maxitems>10</maxitems>
                             </config>
                         </TCEforms>
-                    </addresslist>
+                    </settings.addresslist>
 
-                    <start_zoom>
+                    <settings.start_zoom>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:st_address_map/Resources/Private/Language/locallang_db.xml:start_zoom</label>
@@ -65,9 +65,9 @@
                                 <eval>trim</eval>
                             </config>
                         </TCEforms>
-                    </start_zoom>
+                    </settings.start_zoom>
 
-                    <detail_zoom>
+                    <settings.detail_zoom>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:st_address_map/Resources/Private/Language/locallang_db.xml:detail_zoom</label>
@@ -78,9 +78,9 @@
                                 <eval>trim</eval>
                             </config>
                         </TCEforms>
-                    </detail_zoom>
+                    </settings.detail_zoom>
 
-                    <center_coordinates>
+                    <settings.center_coordinates>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:st_address_map/Resources/Private/Language/locallang_db.xml:center_coordinates</label>
@@ -91,7 +91,7 @@
                                 <eval>trim</eval>
                             </config>
                         </TCEforms>
-                    </center_coordinates>
+                    </settings.center_coordinates>
                 </el>
             </ROOT>
 

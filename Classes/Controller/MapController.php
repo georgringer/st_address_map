@@ -3,18 +3,21 @@
 namespace GeorgRinger\StAddressMap\Controller;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Fluid\View\StandaloneView;
-use TYPO3\CMS\Frontend\Plugin\AbstractPlugin;
+use TYPO3\CMS\Extbase\Service\FlexFormService;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 
-class MainController extends AbstractPlugin
+class MapController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 {
-    var $prefixId = 'tx_staddressmap_pi1';
-    var $scriptRelPath = 'pi1/class.tx_staddressmap_pi1.php';
-    var $extKey = 'st_address_map';
-    var $pi_checkCHash = TRUE;
     protected $ttAddressFieldArray = [];
-    protected $templateHtml = '';
+
+    /** @var array  */
+    protected $currentContentElement = [];
+
+    protected function initializeAction()
+    {
+        $this->currentContentElement = $this->configurationManager->getContentObject()->data;
+    }
 
 
     /**
@@ -30,66 +33,34 @@ class MainController extends AbstractPlugin
         return in_array($field, $this->ttAddressFieldArray, true);
     }
 
-    protected function getTemplate(): StandaloneView
+
+    public function indexAction()
     {
-        $view = GeneralUtility::makeInstance(StandaloneView::class);
-        $view->setTemplatePathAndFilename(GeneralUtility::getFileAbsFileName('EXT:st_address_map/Resources/Private/Templates/FluidTemplate.html'));
-        $view->getRequest()->setControllerExtensionName('StAddressMap');
-        return $view;
-    }
 
-    /**
-     * The main method of the PlugIn
-     *
-     * @param    string $content : The PlugIn content
-     * @param    array $conf : The PlugIn configuration
-     * @return   string  The content that is displayed on the website
-     */
-    public function main($content, $conf)
-    {
-        $this->conf = $conf;
-        $this->pi_setPiVarDefaults();
-        $this->pi_loadLL();
-        $this->pi_initPIflexForm();
-        $errormessage = '';
-
-        $this->conf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_staddressmap_pi1.'];
-
-        $view = $this->getTemplate();
-
-        // errorhandling
-        $mapsettings = $this->cObj->data['pi_flexform']['data']['sDEF']['lDEF'];
-        if (is_array($mapsettings)) {
-            foreach ($mapsettings as $key => $value) {
-                $$key = reset($value);
-                if (reset($value) == '') {
-                    $errormessage .= $this->checkEmptyFields($key);
-                    if ($errormessage != '') $errormessage .= '<br />';
-                }
-            }
+        $wtfMappingFields = ['mapwidth', 'mapheight', 'addresslist', 'start_zoom', 'detail_zoom', 'center_coordinates'];
+        foreach ($wtfMappingFields as $field) {
+            $$field = $this->settings[$field];
         }
-        if ($errormessage != '') return '<div class="error">' . $errormessage . '</div>';
-
         // set addresslist
         $addresslist = GeneralUtility::intExplode(',', $addresslist, TRUE);
         $addresslist = implode(' or pid = ', $addresslist);
 
-        $content_id = $this->cObj->data['uid'];
-        $tablefields = ($this->conf['tablefields'] == '') ? '' : $this->conf['tablefields'] . ',';
-
+        $content_id = $this->currentContentElement['uid'];
+        $tablefields = ($this->settings['tablefields'] == '') ? '' : $this->settings['tablefields'] . ',';
         /* ----- Ajax ----- */
-        if (GeneralUtility::_GET('type') === $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_staddressmap_pi1.']['ajaxtypenum']) {
+        $ajaxType = (int)GeneralUtility::_GET('type');
+        if ($ajaxType !== 0  && $ajaxType === (int)$this->settings['ajaxtypenum']) {
             $cid = GeneralUtility::_GET('cid');
             $hmac = GeneralUtility::_GET('hmac');
 
             if ($hmac !== GeneralUtility::hmac($cid, 'st_address_map')) {
-                return $this->pi_getLL('nodata');
+                return $this->translate('nodata');
             }
             return $this->gimmeData(GeneralUtility::_GET('v'), $cid, GeneralUtility::_GET('t'), $tablefields);
         }
 
         /* ----- selectfields ----- */
-        $dropdownList = GeneralUtility::trimExplode(',', $this->conf['dropdownfields'], true);
+        $dropdownList = GeneralUtility::trimExplode(',', $this->settings['dropdownfields'], true);
         $dropdownResults = [];
         foreach ($dropdownList as $value) {
 
@@ -150,11 +121,11 @@ class MainController extends AbstractPlugin
                     $dropdownResults[$value] = $items;
                 }
             }
-            $view->assign('dropdowns', $dropdownResults);
+            $this->view->assign('dropdowns', $dropdownResults);
         }
 
         /* ----- inputfields ----- */
-        $inputfieldList = GeneralUtility::trimExplode(',', $this->conf['inputfields'], true);
+        $inputfieldList = GeneralUtility::trimExplode(',', $this->settings['inputfields'], true);
         $inputfieldListResults = [];
         foreach ($inputfieldList as $value) {
             if ($this->isValidDatabaseColumn($value)) {
@@ -169,9 +140,9 @@ class MainController extends AbstractPlugin
                 }
             }
         }
-        $view->assign('inputs', $inputfieldListResults);
+        $this->view->assign('inputs', $inputfieldListResults);
 
-        $bubblemarker = ($this->conf['bubblemarker']) ? 'var icon = "' . $this->conf['bubblemarker'] . '";' : 'var icon = "";';
+        $bubblemarker = ($this->settings['bubblemarker']) ? 'var icon = "' . $this->settings['bubblemarker'] . '";' : 'var icon = "";';
         $GLOBALS['TSFE']->additionalFooterData[$this->extKey . '_665_' . $content_id] = '
 			<script type="text/javascript">
 			var map;
@@ -199,19 +170,18 @@ class MainController extends AbstractPlugin
 			}
 			</script>';
 
-        $view->assignMultiple([
-            'contentId' => $this->cObj->data['uid'],
-            'cidHmac' => GeneralUtility::hmac($this->cObj->data['uid'], 'st_address_map'),
-            'settings' => $this->conf,
+        $this->view->assignMultiple([
+            'contentId' => $this->currentContentElement['uid'],
+            'cidHmac' => GeneralUtility::hmac($this->currentContentElement['uid'], 'st_address_map'),
+            'settings' => $this->settings,
             'currentPageId' => $GLOBALS['TSFE']->id,
-            'ajaxTypeNum' => $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_staddressmap_pi1.']['ajaxtypenum']
+            'ajaxTypeNum' => $this->settings['ajaxtypenum']
         ]);
-        return $view->render();
     }
 
-    private function checkEmptyFields($key)
+    private function translate($label)
     {
-        return $this->pi_getLL('error_empty_' . $key);
+        return LocalizationUtility::translate($label, 'st_address_map');
     }
 
 
@@ -238,7 +208,6 @@ class MainController extends AbstractPlugin
 
     private function gimmeData($var, $cid, $what, $tablefields)
     {
-        $view = $this->getTemplate();
         $items = [];
         $validDatabaseFields = array();
         foreach (GeneralUtility::trimExplode(',', $tablefields, TRUE) as $field) {
@@ -247,30 +216,33 @@ class MainController extends AbstractPlugin
             }
         }
 
-        $this->conf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_staddressmap_pi1.'];
-
         $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('pi_flexform', 'tt_content', '(hidden=0 and deleted=0) and uid=' . (int)$cid);
+        $flex = '';
         if ($res && $GLOBALS['TYPO3_DB']->sql_affected_rows($res) != 0) {
             while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
                 $flexform = GeneralUtility::xml2array($row['pi_flexform']);
+                $flex = $row['pi_flexform'];
             }
         } else {
-            return $this->pi_getLL('nodata');
+            return $this->translate('nodata');
         }
 
-        foreach ($flexform['data']['sDEF']['lDEF'] as $key => $value) {
-            $$key = reset($value);
+        $flexFormService = GeneralUtility::makeInstance(FlexFormService::class);
+        $settings = $flexFormService->convertFlexFormContentToArray($flex);
+        foreach ($settings['settings'] as $key => $value) {
+            $$key = ($value);
         }
-        $rad = ($this->conf['searchradius'] or $this->conf['searchradius'] != 0) ? $this->conf['searchradius'] : '20000';
+
+        $rad = ($this->settings['searchradius'] or $this->settings['searchradius'] != 0) ? $this->settings['searchradius'] : '20000';
         // ----- set addresslist ------
         $addresslist = GeneralUtility::intExplode(',', $addresslist, TRUE);
         $addresslist = implode(' or pid = ', $addresslist);
 
         //  ----- radius -----
         $js_circle = 'circledata = null;';
-        if (in_array($what, preg_split('/\s?,\s?/', $this->conf['radiusfields']))) {
+        if (in_array($what, preg_split('/\s?,\s?/', $this->settings['radiusfields']))) {
             // radius
-            $rc = ($this->conf['radiuscountry']) ? ',' . $this->conf['radiuscountry'] : '';
+            $rc = ($this->settings['radiuscountry']) ? ',' . $this->settings['radiuscountry'] : '';
             $koord = $this->getMapsCoordinates(GeneralUtility::_GET('v') . $rc);
 
             $radiusSearch =
@@ -290,14 +262,14 @@ class MainController extends AbstractPlugin
             );
 
             // see radius
-            if ($this->conf['circle'] == 1) {
+            if ($this->settings['circle'] == 1) {
                 $js_circle .= '
 					circledata = {
-						strokeColor: "' . $this->conf['circleStrokeColor'] . '",
-						strokeOpacity: ' . $this->conf['circleStrokeOpacity'] . ',
-						strokeWeight: ' . $this->conf['circleStrokeWeight'] . ',
-						fillColor: "' . $this->conf['circlefillColor'] . '",
-						fillOpacity: ' . $this->conf['circlefillOpacity'] . ',
+						strokeColor: "' . $this->settings['circleStrokeColor'] . '",
+						strokeOpacity: ' . $this->settings['circleStrokeOpacity'] . ',
+						strokeWeight: ' . $this->settings['circleStrokeWeight'] . ',
+						fillColor: "' . $this->settings['circlefillColor'] . '",
+						fillOpacity: ' . $this->settings['circlefillOpacity'] . ',
 						map: map,
 						center: new google.maps.LatLng(' . $koord['1'] . ', ' . $koord['0'] . '),
 						radius: ' . ($rad * 1000) . '
@@ -316,8 +288,8 @@ class MainController extends AbstractPlugin
 
         // see all
         if (GeneralUtility::_GET('all') == 1) {
-            $orderBy = ($this->isValidDatabaseColumn($this->conf['orderall'])) ? $this->conf['orderall'] : 'city';
-            $rad = ($this->conf['searchradius'] or $this->conf['searchradius'] != 0) ? $this->conf['searchradius'] : '20000';
+            $orderBy = ($this->isValidDatabaseColumn($this->settings['orderall'])) ? $this->settings['orderall'] : 'city';
+            $rad = ($this->settings['searchradius'] or $this->settings['searchradius'] != 0) ? $this->settings['searchradius'] : '20000';
             $res = $GLOBALS['TYPO3_DB']->exec_selectgetRows(
                 'uid, ' . (!empty($validDatabaseFields) ? implode(', ', $validDatabaseFields) . ', ' : '') . 'tx_staddressmap_lat, tx_staddressmap_lng',
                 'tt_address',
@@ -352,9 +324,9 @@ class MainController extends AbstractPlugin
                 $js_output .= 'a[' . $ji . '] = new Object();' . "\n";
                 // begin bubbletext
                 $bubbletext = '';
-                foreach (preg_split('/\s?,\s?/', $this->conf['bubblefields']) as $tvalue) {
+                foreach (preg_split('/\s?,\s?/', $this->settings['bubblefields']) as $tvalue) {
                     if ($row[$tvalue]) {
-                        $bubblewrap = $this->conf['bubblelayout.'][$tvalue] ? $this->conf['bubblelayout.'][$tvalue] : '|';
+                        $bubblewrap = $this->settings['bubblelayout.'][$tvalue] ? $this->settings['bubblelayout.'][$tvalue] : '|';
                         if ($tvalue === 'email') {
                             //$bubbletext .= \TYPO3\CMS\Core\TypoScript\TemplateService::wrap(str_replace(array('<a', "'", '"'), array("tx_addressmap_replace", "|-|", "-|-"), $this->cObj->mailto_makelinks('mailto:' . $row[$tvalue], NULL )), $bubblewrap);
                             $bubbletext .= $bubblewrap;
@@ -371,7 +343,7 @@ class MainController extends AbstractPlugin
                 // list
                 foreach (preg_split('/\s?,\s?/', $tablefields) as $tvalue) {
                     if ($row[$tvalue]) {
-                        $listwrap = $this->conf['listlayout.'][$tvalue] ? $this->conf['listlayout.'][$tvalue] : '|';
+                        $listwrap = $this->settings['listlayout.'][$tvalue] ? $this->settings['listlayout.'][$tvalue] : '|';
                         $markerArray['###' . strtoupper($tvalue) . '###'] = $row[$tvalue];
                     } else {
                         $markerArray['###' . strtoupper($tvalue) . '###'] = '';
@@ -387,13 +359,13 @@ class MainController extends AbstractPlugin
                 $common_lng[] = $row['tx_staddressmap_lng'];
                 $ji++;
 
-                $row['_distance'] = ($this->conf['radiusfields'] != '' && round($row['EAdvanced'], 1) > 0) ? $row['EAdvanced'] : '';
+                $row['_distance'] = ($this->settings['radiusfields'] != '' && round($row['EAdvanced'], 1) > 0) ? $row['EAdvanced'] : '';
                 $items[] = $row;
             }
             $js_output .= 'marker[0] = a;' . "\n";
             $js_output .= 'centerpoints[0] = new Object();' . "\n";
 
-            if (in_array($what, preg_split('/\s?,\s?/', $this->conf['radiusfields']))) {
+            if (in_array($what, preg_split('/\s?,\s?/', $this->settings['radiusfields']))) {
                 $js_output .= 'centerpoints[0].lat = ' . $koord['1'] . ';' . "\n";
                 $js_output .= 'centerpoints[0].lng = ' . $koord['0'] . ';' . "\n";
             } else {
@@ -407,14 +379,14 @@ class MainController extends AbstractPlugin
             $js_output .= '</script>';
 
         } else {
-            return $this->pi_getLL('nodata') . '<script type="text/javascript">marker = new Array();</script>';
+            return $this->translate('nodata') . '<script type="text/javascript">marker = new Array();</script>';
         }
 
-        $view->assignMultiple([
+        $this->view->assignMultiple([
             'ajaxlist' => 1,
             'items' => $items,
             'js' => $js_output
         ]);
-        return $view->render();
+        return $this->view->render();
     }
 }

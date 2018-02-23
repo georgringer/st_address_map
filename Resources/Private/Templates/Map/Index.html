@@ -1,0 +1,49 @@
+<f:if condition="{ajaxlist}">
+	<f:then>
+		{js -> f:format.raw()}
+		<f:for each="{items}" as="row">
+			<div class="tx_staddressmap_addresslist_item">
+				<b>{row.uid} {row.company}</b><br />
+				<p><b>{row._distance}</b></p>
+			</div>
+
+		</f:for>
+	</f:then>
+	<f:else>
+		<div style="display:none" id="tx_staddressmap_addresslist_pageid">{currentPageId}</div>
+		<div style="display:none" id="tx_staddressmap_addresslist_ajaxtypenum">{ajaxTypeNum}</div>
+
+		<f:for each="{dropdowns}" as="items" key="key">
+			<f:render section="dropdown" arguments="{key:key,items:items}"/>
+		</f:for>
+		<f:for each="{inputs}" as="value">
+			<f:render section="input" arguments="{value:value}"/>
+		</f:for>
+
+
+		<f:if condition="{settings.searchbutton}">
+			<input class="tx_staddressmap_submit" type="submit" value="{f:translate(key:'search')}"/>
+		</f:if>
+		<f:if condition="{settings.seeatstart}">
+			<input id="tx_staddressmap_seeatstart" type="hidden" value="1"/>
+		</f:if>
+		<input id="tx_staddressmap_cid" type="hidden" value="{contentId}"/>
+		<input id="tx_staddressmap_cidhmac" type="hidden" value="{cidHmac}"/>
+		<div id="tx_staddressmap_gmap_{contentId}" class="tx_staddressmap_gmap" style="width: 400px; height: 500px"></div>
+		<div id="tx_staddressmap_addresslist_{contentId}" class="tx_staddressmap_addresslist"></div>
+	</f:else>
+</f:if>
+
+<f:section name="dropdown">
+	<select class="tx_staddressmap_select" id="tx_staddressmap_select_{key}">
+		<option value="-1">{f:translate(key:'please_select')}</option>
+		<f:for each="{items}" as="name" key="value">
+			<option value="{value}">{name}</option>
+		</f:for>
+	</select>
+</f:section>
+
+<f:section name="input">
+	<input class="tx_staddressmap_input" id="tx_staddressmap_input_{name}" value="" />
+</f:section>
+
